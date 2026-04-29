@@ -1,5 +1,6 @@
 {
   "owner": "bridgecrewio",
   "name": "checkov-action",
-  "visibility": ""
+  "visibility": "internal",
+  "description": "This GitHub Action runs Checkov against infrastructure-as-code, open source packages, container images, and CI/CD configurations to identify misconfigurations, vulnerabilities, and license compliance issues."
 }
