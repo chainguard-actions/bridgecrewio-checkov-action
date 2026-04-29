@@ -1,6 +1,12 @@
 # bridgecrewio/checkov-action
 
-Hardened GitHub Action by [Chainguard](https://www.chainguard.dev).
+Hardened by [Chainguard](https://www.chainguard.dev) from the upstream action at [https://github.com/bridgecrewio/checkov-action](https://github.com/bridgecrewio/checkov-action).
+
+## Versions
+
+| Version | Tag | Upstream commit |
+|---------|-----|-----------------|
+| v12.1347.0 | [`v12.1347.0`](https://github.com/chainguard-actions/checkov-action/tree/v12.1347.0) | — |
 
 ## Privacy
 
