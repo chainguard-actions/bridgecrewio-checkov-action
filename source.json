@@ -1,4 +1,6 @@
 {
-  "upstream": "bridgecrewio/checkov-action",
-  "version": "v12.1347.0"
+  "owner": "bridgecrewio",
+  "repo": "checkov-action",
+  "version": "",
+  "url": "https://github.com/bridgecrewio/checkov-action"
 }
