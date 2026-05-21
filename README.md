@@ -8,7 +8,7 @@ Hardened by [Chainguard](https://www.chainguard.dev) from the upstream action at
 
 | Version | Tag | Upstream commit |
 |---------|-----|-----------------|
-| v12.1347.0 | [`v12.1347.0`](https://github.com/chainguard-actions/checkov-action/tree/v12.1347.0) | — |
+| v12.1347.0 | [`v12.1347.0`](https://github.com/chainguard-actions/bridgecrewio-checkov-action/tree/v12.1347.0) | — |
 
 ## Privacy
 
