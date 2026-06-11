@@ -1,0 +1,4 @@
+soft-fail: true
+output: cli
+framework:
+  - terraform

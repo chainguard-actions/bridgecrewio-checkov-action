@@ -1,0 +1,20 @@
+name: Test check and skip_check inputs
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - id: action
+        uses: .
+        with:
+          directory: ./actions/hardened/bridgecrewio--checkov-action/v12.1347.0/tests/fixtures/terraform
+          check: "CKV_AWS_18,CKV_AWS_21"
+          skip_check: "CKV_AWS_144"
+          soft_fail: "true"
+          output_format: cli
+          log_level: WARNING
+      - name: Assert action completed
+        run: |
+          echo "PASS: action completed with check and skip_check inputs"

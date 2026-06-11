@@ -1,0 +1,20 @@
+name: Test external_checks_dirs and external_checks_repos inputs
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - id: action
+        uses: .
+        with:
+          directory: ./actions/hardened/bridgecrewio--checkov-action/v12.1347.0/tests/fixtures/terraform
+          external_checks_dirs: ./actions/hardened/bridgecrewio--checkov-action/v12.1347.0/tests/fixtures/custom-checks
+          external_checks_repos: ""
+          soft_fail: "true"
+          output_format: cli
+          log_level: WARNING
+      - name: Assert action completed
+        run: |
+          echo "PASS: action completed with external_checks_dirs and external_checks_repos inputs"
