@@ -1,6 +1,6 @@
 # bridgecrewio/checkov-action
 
-This GitHub Action runs Checkov against infrastructure-as-code, open source packages, container images, and CI/CD configurations to identify misconfigurations, vulnerabilities, and license compliance issues.
+Run Checkov against Terraform/CloudFormation infrastructure code, as a pre-packaged GitHub Action.
 
 Hardened by [Chainguard](https://www.chainguard.dev) from the upstream action at [https://github.com/bridgecrewio/checkov-action](https://github.com/bridgecrewio/checkov-action).
 
