@@ -1,0 +1,53 @@
+name: Test Checkov scan with external checks directory
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Set up git origin reachable inside Docker container
+        run: |
+          git config user.email "test@example.com"
+          git config user.name "Test User"
+          rm -rf "$GITHUB_WORKSPACE/.git-remote"
+          git init --bare "$GITHUB_WORKSPACE/.git-remote"
+          git push "$GITHUB_WORKSPACE/.git-remote" HEAD:refs/heads/act-harness
+          git remote set-url origin "$GITHUB_WORKSPACE/.git-remote" 2>/dev/null || \
+            git remote add origin "$GITHUB_WORKSPACE/.git-remote"
+
+      - name: Create external checks directory
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE/tests/fixtures/custom_checks"
+          # Create a minimal Python custom check
+          cat > "$GITHUB_WORKSPACE/tests/fixtures/custom_checks/example_check.py" << 'EOF'
+from checkov.common.models.enums import CheckCategories, CheckResult
+from checkov.terraform.checks.resource.base_resource_check import BaseResourceCheck
+
+class ExampleCheck(BaseResourceCheck):
+    def __init__(self):
+        name = "Example custom check"
+        id = "CKV_CUSTOM_1"
+        supported_resources = ['aws_s3_bucket']
+        categories = [CheckCategories.GENERAL_SECURITY]
+        super().__init__(name=name, id=id, categories=categories, supported_resources=supported_resources)
+
+    def scan_resource_conf(self, conf):
+        return CheckResult.PASSED
+
+check = ExampleCheck()
+EOF
+
+      - id: action
+        uses: .
+        with:
+          directory: tests/fixtures/terraform
+          external_checks_dirs: tests/fixtures/custom_checks
+          soft_fail: "true"
+          output_format: cli
+          log_level: WARNING
+
+      - name: Assert action completed with external checks directory
+        run: |
+          echo "PASS: action completed with external_checks_dirs input"

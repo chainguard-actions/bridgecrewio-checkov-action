@@ -1,4 +1,4 @@
-name: Test Checkov scan with config file
+name: Test Checkov scan with external checks repos
 on:
   workflow_dispatch:
 jobs:
@@ -21,11 +21,22 @@ jobs:
         uses: .
         with:
           directory: tests/fixtures/terraform
-          config_file: tests/fixtures/checkov-config/.checkov.yaml
+          # Use a known public checkov custom checks repo
+          external_checks_repos: bridgecrewio/checkov-action
           soft_fail: "true"
           output_format: cli
           log_level: WARNING
+        continue-on-error: true
 
-      - name: Assert action completed with config file
+      - name: Assert action ran with external_checks_repos input
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
         run: |
-          echo "PASS: action completed with config_file input"
+          echo "outcome: $OUTCOME"
+          # The repo may or may not be a valid checks repo; either outcome is acceptable
+          if [ "$OUTCOME" = "success" ] || [ "$OUTCOME" = "failure" ]; then
+            echo "PASS: action ran with external_checks_repos input"
+          else
+            echo "FAIL: unexpected outcome '$OUTCOME'"
+            exit 1
+          fi

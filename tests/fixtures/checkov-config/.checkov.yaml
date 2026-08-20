@@ -1,4 +1,4 @@
+# Checkov configuration file for testing
 soft-fail: true
 output: cli
-framework:
-  - terraform
+log-level: WARNING

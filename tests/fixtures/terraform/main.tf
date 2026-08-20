@@ -1,13 +1,18 @@
-# Simple Terraform fixture for Checkov scanning tests
-# This intentionally has some issues to trigger checks
+# Simple Terraform fixture for Checkov testing
+# This intentionally has some issues for Checkov to find
 
 resource "aws_s3_bucket" "example" {
   bucket = "my-test-bucket"
 }
 
-resource "aws_s3_bucket_versioning" "example" {
-  bucket = aws_s3_bucket.example.id
-  versioning_configuration {
-    status = "Enabled"
+resource "aws_security_group" "example" {
+  name        = "example"
+  description = "Example security group"
+
+  ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 }

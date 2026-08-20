@@ -1,4 +1,4 @@
-name: Test Checkov scan with config file
+name: Test Checkov scan with skipped checks
 on:
   workflow_dispatch:
 jobs:
@@ -21,11 +21,12 @@ jobs:
         uses: .
         with:
           directory: tests/fixtures/terraform
-          config_file: tests/fixtures/checkov-config/.checkov.yaml
+          # Skip S3 and security group checks
+          skip_check: "CKV_AWS_18,CKV_AWS_24,CKV_AWS_25"
           soft_fail: "true"
           output_format: cli
           log_level: WARNING
 
-      - name: Assert action completed with config file
+      - name: Assert action completed with skipped checks
         run: |
-          echo "PASS: action completed with config_file input"
+          echo "PASS: action completed with skip_check filter applied"

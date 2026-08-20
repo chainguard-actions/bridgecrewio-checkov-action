@@ -1,4 +1,4 @@
-name: Test Checkov scan with config file
+name: Test Checkov scan with download_external_modules
 on:
   workflow_dispatch:
 jobs:
@@ -21,11 +21,11 @@ jobs:
         uses: .
         with:
           directory: tests/fixtures/terraform
-          config_file: tests/fixtures/checkov-config/.checkov.yaml
+          download_external_modules: "false"
           soft_fail: "true"
           output_format: cli
           log_level: WARNING
 
-      - name: Assert action completed with config file
+      - name: Assert action completed with download_external_modules input
         run: |
-          echo "PASS: action completed with config_file input"
+          echo "PASS: action completed with download_external_modules=false"

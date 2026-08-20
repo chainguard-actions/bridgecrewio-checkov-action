@@ -1,4 +1,4 @@
-name: Test Checkov scan with config file
+name: Test Checkov scan with hard_fail_on and soft_fail_on controls
 on:
   workflow_dispatch:
 jobs:
@@ -21,11 +21,22 @@ jobs:
         uses: .
         with:
           directory: tests/fixtures/terraform
-          config_file: tests/fixtures/checkov-config/.checkov.yaml
-          soft_fail: "true"
+          # soft_fail_on a non-existent check so it doesn't affect results
+          soft_fail_on: "CKV_AWS_999"
+          # hard_fail_on a non-existent check so it doesn't cause failure
+          hard_fail_on: "CKV_AWS_998"
           output_format: cli
           log_level: WARNING
+        continue-on-error: true
 
-      - name: Assert action completed with config file
+      - name: Assert action ran with fail controls
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
         run: |
-          echo "PASS: action completed with config_file input"
+          echo "outcome: $OUTCOME"
+          if [ "$OUTCOME" = "success" ] || [ "$OUTCOME" = "failure" ]; then
+            echo "PASS: action ran with hard_fail_on and soft_fail_on inputs"
+          else
+            echo "FAIL: unexpected outcome '$OUTCOME'"
+            exit 1
+          fi

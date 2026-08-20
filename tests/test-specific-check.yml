@@ -1,4 +1,4 @@
-name: Test Checkov scan with config file
+name: Test Checkov scan with specific check
 on:
   workflow_dispatch:
 jobs:
@@ -21,11 +21,12 @@ jobs:
         uses: .
         with:
           directory: tests/fixtures/terraform
-          config_file: tests/fixtures/checkov-config/.checkov.yaml
+          # CKV_AWS_18 checks S3 bucket access logging - a well-known check
+          check: "CKV_AWS_18"
           soft_fail: "true"
           output_format: cli
           log_level: WARNING
 
-      - name: Assert action completed with config file
+      - name: Assert action completed
         run: |
-          echo "PASS: action completed with config_file input"
+          echo "PASS: action completed with specific check filter"
