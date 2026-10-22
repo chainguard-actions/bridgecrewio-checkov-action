@@ -1,0 +1,36 @@
+name: Test external checks directory
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - id: action
+        uses: .
+        with:
+          directory: tests/fixtures/insecure
+          framework: terraform
+          external_checks_dirs: tests/fixtures/custom-checks
+          check: CKV2_CUSTOM_1
+          soft_fail: true
+          output_format: cli,json
+          output_file_path: console,custom-reports
+      - name: Assert custom check ran
+        run: |
+          REPORT="$GITHUB_WORKSPACE/custom-reports"
+          if [ ! -e "$REPORT" ]; then
+            echo "FAIL: report not created at $REPORT"
+            exit 1
+          fi
+          if [ -d "$REPORT" ]; then
+            find "$REPORT" -type f -exec cat {} \; | head -c 4000
+          else
+            head -c 4000 "$REPORT"
+          fi
+          echo
+          if ! grep -rq "CKV2_CUSTOM_1" "$REPORT"; then
+            echo "FAIL: report does not mention custom check CKV2_CUSTOM_1"
+            exit 1
+          fi
+          echo "PASS"

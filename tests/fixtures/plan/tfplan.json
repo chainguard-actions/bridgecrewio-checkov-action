@@ -1,0 +1,71 @@
+{
+  "format_version": "1.1",
+  "terraform_version": "1.5.0",
+  "planned_values": {
+    "root_module": {
+      "resources": [
+        {
+          "address": "aws_security_group.open_ssh",
+          "mode": "managed",
+          "type": "aws_security_group",
+          "name": "open_ssh",
+          "provider_name": "registry.terraform.io/hashicorp/aws",
+          "schema_version": 1,
+          "values": {
+            "name": "open-ssh",
+            "description": "Allows SSH from anywhere",
+            "ingress": [
+              {
+                "cidr_blocks": ["0.0.0.0/0"],
+                "description": "ssh",
+                "from_port": 22,
+                "to_port": 22,
+                "protocol": "tcp",
+                "ipv6_cidr_blocks": [],
+                "prefix_list_ids": [],
+                "security_groups": [],
+                "self": false
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "resource_changes": [
+    {
+      "address": "aws_security_group.open_ssh",
+      "mode": "managed",
+      "type": "aws_security_group",
+      "name": "open_ssh",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "name": "open-ssh",
+          "description": "Allows SSH from anywhere"
+        },
+        "after_unknown": {}
+      }
+    }
+  ],
+  "configuration": {
+    "root_module": {
+      "resources": [
+        {
+          "address": "aws_security_group.open_ssh",
+          "mode": "managed",
+          "type": "aws_security_group",
+          "name": "open_ssh",
+          "provider_config_key": "aws",
+          "expressions": {
+            "name": {"constant_value": "open-ssh"},
+            "description": {"constant_value": "Allows SSH from anywhere"}
+          },
+          "schema_version": 1
+        }
+      ]
+    }
+  }
+}

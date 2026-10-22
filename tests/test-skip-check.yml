@@ -1,0 +1,37 @@
+name: Test skip_check
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - id: action
+        uses: .
+        with:
+          directory: tests/fixtures/insecure
+          skip_check: CKV_AWS_24
+          framework: terraform
+          soft_fail: true
+          output_format: cli
+      - name: Assert CKV_AWS_24 was skipped
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
+          RESULTS: ${{ steps.action.outputs.results }}
+        run: |
+          echo "outcome: $OUTCOME"
+          echo "results:"
+          echo "$RESULTS"
+          if [ "$OUTCOME" != "success" ]; then
+            echo "FAIL: expected success"
+            exit 1
+          fi
+          if ! echo "$RESULTS" | grep -q "terraform scan results"; then
+            echo "FAIL: expected terraform scan results in output"
+            exit 1
+          fi
+          if echo "$RESULTS" | grep -q "Check: CKV_AWS_24"; then
+            echo "FAIL: CKV_AWS_24 should have been skipped"
+            exit 1
+          fi
+          echo "PASS"

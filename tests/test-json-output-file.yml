@@ -1,0 +1,41 @@
+name: Test JSON output file
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - id: action
+        uses: .
+        with:
+          directory: tests/fixtures/insecure
+          check: CKV_AWS_24
+          framework: terraform
+          soft_fail: true
+          output_format: cli,json
+          output_file_path: console,checkov-reports
+      - name: Assert JSON report written with failed check
+        run: |
+          REPORT="$GITHUB_WORKSPACE/checkov-reports"
+          ls -la "$REPORT" || true
+          if [ ! -e "$REPORT" ]; then
+            echo "FAIL: report not created at $REPORT"
+            exit 1
+          fi
+          if [ -d "$REPORT" ]; then
+            ls -la "$REPORT"
+            find "$REPORT" -type f -exec cat {} \; | head -c 4000
+          else
+            head -c 4000 "$REPORT"
+          fi
+          echo
+          if ! grep -rq "CKV_AWS_24" "$REPORT"; then
+            echo "FAIL: report does not mention CKV_AWS_24"
+            exit 1
+          fi
+          if ! grep -rqi "failed" "$REPORT"; then
+            echo "FAIL: report does not contain failed results"
+            exit 1
+          fi
+          echo "PASS"

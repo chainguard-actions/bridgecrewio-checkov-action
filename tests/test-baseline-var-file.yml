@@ -1,0 +1,39 @@
+name: Test baseline, var file and credential env inputs
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - id: action
+        uses: .
+        continue-on-error: true
+        with:
+          directory: tests/fixtures/insecure
+          check: CKV_AWS_24
+          framework: terraform
+          baseline: tests/fixtures/baseline/.checkov.baseline
+          var_file: tests/fixtures/vars/test.tfvars
+          soft_fail: true
+          ckv_validate_secrets: false
+          github_pat: dummy-pat
+          tfc_token: dummy-tfc
+          tf_registry_token: dummy-registry
+          vcs_base_url: https://vcs.example.com
+          vcs_username: dummy-user
+          vcs_token: dummy-vcs-token
+          bitbucket_token: dummy-bb-token
+          bitbucket_username: dummy-bb-user
+          bitbucket_app_password: dummy-bb-pass
+          output_format: cli
+      - name: Assert action succeeded
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
+        run: |
+          echo "outcome: $OUTCOME"
+          if [ "$OUTCOME" != "success" ]; then
+            echo "FAIL: expected success with baseline/var_file and soft_fail"
+            exit 1
+          fi
+          echo "PASS"

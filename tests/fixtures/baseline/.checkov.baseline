@@ -1,0 +1,15 @@
+{
+  "failed_checks": [
+    {
+      "file": "/main.tf",
+      "findings": [
+        {
+          "resource": "aws_security_group.open_ssh",
+          "check_ids": [
+            "CKV_AWS_24"
+          ]
+        }
+      ]
+    }
+  ]
+}

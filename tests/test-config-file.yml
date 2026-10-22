@@ -1,0 +1,27 @@
+name: Test config file
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - id: action
+        uses: .
+        continue-on-error: true
+        with:
+          directory: tests/fixtures/insecure
+          check: CKV_AWS_24
+          framework: terraform
+          config_file: tests/fixtures/config/.checkov.yaml
+          output_format: cli
+      - name: Assert config file soft-fail was honored
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
+        run: |
+          echo "outcome: $OUTCOME"
+          if [ "$OUTCOME" != "success" ]; then
+            echo "FAIL: expected success because the config file sets soft-fail: true"
+            exit 1
+          fi
+          echo "PASS"

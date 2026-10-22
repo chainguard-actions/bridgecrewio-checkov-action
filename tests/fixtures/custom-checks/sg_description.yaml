@@ -1,0 +1,10 @@
+metadata:
+  id: "CKV2_CUSTOM_1"
+  name: "Ensure security group has a description"
+  category: "NETWORKING"
+definition:
+  cond_type: "attribute"
+  resource_types:
+    - "aws_security_group"
+  attribute: "description"
+  operator: "not_exists"

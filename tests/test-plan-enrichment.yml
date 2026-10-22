@@ -1,0 +1,28 @@
+name: Test terraform plan enrichment with deep analysis
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - id: action
+        uses: .
+        continue-on-error: true
+        with:
+          file: tests/fixtures/plan/tfplan.json
+          framework: terraform_plan
+          repo_root_for_plan_enrichment: tests/fixtures/insecure
+          deep_analysis: true
+          soft_fail: true
+          output_format: cli
+      - name: Assert plan scan succeeded
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
+        run: |
+          echo "outcome: $OUTCOME"
+          if [ "$OUTCOME" != "success" ]; then
+            echo "FAIL: expected success scanning plan with soft_fail"
+            exit 1
+          fi
+          echo "PASS"
